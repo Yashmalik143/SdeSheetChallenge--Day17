@@ -1,0 +1,52 @@
+#include<bits/stdc++.h>
+int minTimeToRot(vector<vector<int>>& grid, int n, int m)
+{
+    // Write your code here. 
+    int time=-1;
+    int fresh=0;
+    queue<pair<int,int>>q; //to store row&col number of rotten oranges
+    
+    for(int i=0;i<n;i++)
+    {
+        for(int j=0;j<m;j++)
+        {
+            if(grid[i][j]==2) 
+                q.push({i,j}); //check if rotten push in q
+            if(grid[i][j]==1)
+                fresh++;      //count of fresh
+        }
+    }
+    
+    int dx[4]={0,0,1,-1}; // direction
+    int dy[4]={1,-1,0,0}; // direction
+    
+    while(!q.empty())
+    {
+        int s=q.size();  //q stored rotted oranges(2)//
+        while(s--)     //jab tak khali na hojaye
+        {
+            pair<int,int>p=q.front(); 
+            q.pop();
+            for(int i=0;i<4;i++)
+            {
+                int r=p.first+dx[i];  //check for left right
+                int c=p.second+dy[i]; //check up  & down
+                if(r>=0 && r<n && c>=0 &&c<m && grid[r][c]==1) //check it is fresh & boundary conditions
+                {
+                    grid[r][c]=2; //if found fresh than make it rotten
+                    q.push({r,c}); //push newly rotten oranges in q to find its (aaju baju wale) fresh orange to make them rotten//
+                    fresh--;  //decrease count of fresh
+                }
+            }
+        }
+        time++;  //if q is empty then this is our one time cycle
+    }
+    
+    if(fresh>0)  //it means fresh abhi bhi bacha hai matrix me due to waha tak phoch nhi skte 0 ki wajh se
+        return -1; //toh -1 return krdo(hum sbko rott nhi  kr paye)//
+    
+    if(time==-1)  //koi rotted diya hi nhi tha
+        return 0;
+    
+    return time; //if we successfull make all the oranges be rotten orange so return how many time cycle we required to make all oranges rott 
+}
